@@ -1,6 +1,7 @@
 FROM node:16.17-alpine as builder
 
 RUN npm install -g --production --omit=dev eslint@7.20.0;
+RUN npm install -g --production --omit=dev eslint-config-openlayers@7.0.0;
 
 # Remove unecessary files
 RUN set -eux \
