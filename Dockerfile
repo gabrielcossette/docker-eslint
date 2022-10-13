@@ -1,19 +1,6 @@
-FROM alpine:latest as builder
+FROM node:16.17-alpine as builder
 
-RUN set -eux \
-	&& apk add --no-cache \
-		nodejs-current \
-		npm
-
-ARG VERSION=latest
-RUN set -eux \
-	&& if [ ${VERSION} = "latest" ]; then \
-		npm install -g --production --omit=dev eslint; \
-	else \
-		npm install -g --production --omit=dev eslint@7.20.0; \
-	fi \
-	\
-	&& /usr/local/lib/node_modules/eslint/bin/eslint.js --version | grep -E '^v?[0-9]+'
+RUN npm install -g --production --omit=dev eslint@7.20.0;
 
 # Remove unecessary files
 RUN set -eux \
@@ -42,14 +29,12 @@ RUN set -eux \
 	&& find /usr/local/lib/node_modules -type f -iname '*.ts' -exec rm {} \; \
 	&& find /usr/local/lib/node_modules -type f -iname '*.yml' -exec rm {} \;
 
-FROM alpine:latest
+FROM node:16.17-alpine
 LABEL \
 	maintainer="cytopia <cytopia@everythingcli.org>" \
 	repo="https://github.com/cytopia/docker-eslint"
 COPY --from=builder /usr/local/lib/node_modules/ /node_modules/
-RUN set -eux \
-	&& apk add --no-cache nodejs-current \
-	&& ln -sf /node_modules/eslint/bin/eslint.js /usr/bin/eslint
+RUN ln -sf /node_modules/eslint/bin/eslint.js /usr/bin/eslint
 
 WORKDIR /data
 ENTRYPOINT ["eslint"]
