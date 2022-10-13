@@ -10,7 +10,7 @@ RUN set -eux \
 	&& if [ ${VERSION} = "latest" ]; then \
 		npm install -g --production --omit=dev eslint; \
 	else \
-		npm install -g --production --omit=dev eslint@${VERSION}; \
+		npm install -g --production --omit=dev eslint@7.20.0; \
 	fi \
 	\
 	&& /usr/local/lib/node_modules/eslint/bin/eslint.js --version | grep -E '^v?[0-9]+'
